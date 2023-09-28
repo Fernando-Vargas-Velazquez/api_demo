@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+import csv
 
 app = FastAPI()
 
@@ -8,8 +9,17 @@ async def root():
 
 @app.get("/v1/contactos")
 async def get_contactos():
-    # TODO read contactos.csv
-    # TODO JSON encode contactos.csv
-    # TODO save in response
-    response = []
-    return response
+    # Define la ruta de tu archivo CSV
+    csv_file_path = "contactos.csv"
+
+    # Inicializa una lista para almacenar los datos de contacto
+    contactos = []
+
+    # Lee los datos del archivo CSV e imprímelos
+    with open(csv_file_path, mode='r', encoding='utf-8') as file:
+        csv_reader = csv.DictReader(file)
+        for row in csv_reader:
+            contactos.append(row)
+            print(row)  # Imprime cada fila
+
+    return {"contactos": contactos}
