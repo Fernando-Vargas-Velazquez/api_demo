@@ -1,4 +1,5 @@
-from fastapi import FastAPI, status
+from fastapi import FastAPI, HTTPException, Request, status
+from pydantic import BaseModel
 import csv
 
 app = FastAPI()
@@ -36,3 +37,28 @@ async def get_contactos():
             print(row)  # Imprime cada fila
 
     return {"contactos": contactos}
+
+# Define el modelo Pydantic para los contactos
+class Contacto(BaseModel):
+    nombre: str
+    email: str
+
+# Nueva ruta y función para el método POST
+@app.post(
+    "/v1/contacto", 
+    status_code=status.HTTP_201_CREATED,
+    description="Endpoint para agregar un nuevo contacto",
+    summary="Endpoint para agregar un nuevo contacto")
+async def agregar_contacto(contacto: Contacto):
+    nuevo_contacto = {
+        "nombre": contacto.nombre,
+        "email": contacto.email,
+    }
+
+    archivo_contactos = "contactos.csv"
+    with open(archivo_contactos, mode='a', encoding='utf-8', newline='') as file:
+        fieldnames = ["nombre", "email"]  # Agrega más campos si es necesario
+        csv_writer = csv.DictWriter(file, fieldnames=fieldnames)
+        csv_writer.writerow(nuevo_contacto)
+
+    return {"mensaje": "Contacto agregado correctamente"}
