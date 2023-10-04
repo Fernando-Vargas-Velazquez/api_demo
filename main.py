@@ -11,8 +11,8 @@ app = FastAPI()
 async def root():
     """
     #Endpoint raiz
-    ##Status code
-    *201 created
+        ##Status code
+        *201 created
     """
     return {"message": "Hello World"}
 
@@ -36,7 +36,7 @@ async def get_contactos():
             contactos.append(row)
             print(row)  # Imprime cada fila
 
-    return {"contactos": contactos}
+    return {"Contactos": contactos}
 
 # Define el modelo Pydantic para los contactos
 class Contacto(BaseModel):
@@ -45,10 +45,11 @@ class Contacto(BaseModel):
 
 # Nueva ruta y función para el método POST
 @app.post(
-    "/v1/contacto", 
+    "/v1/contactos", 
     status_code=status.HTTP_201_CREATED,
     description="Endpoint para agregar un nuevo contacto",
     summary="Endpoint para agregar un nuevo contacto")
+
 async def agregar_contacto(contacto: Contacto):
     nuevo_contacto = {
         "nombre": contacto.nombre,
@@ -62,3 +63,4 @@ async def agregar_contacto(contacto: Contacto):
         csv_writer.writerow(nuevo_contacto)
 
     return {"mensaje": "Contacto agregado correctamente"}
+
